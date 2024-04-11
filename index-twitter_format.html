@@ -45,11 +45,8 @@ function formatText(text) {
   for (let i = 0; i < words.length; i++) {
     let word = words[i];
 
-    // 检查是否有标点符号
-    const hasPunctuation = /[,.:;!?]$/.test(word);
-
-    // 如果当前行长度加上这个单词超过了最大长度或包含标点符号
-    if (lineLength + word.length > 70 || hasPunctuation) {
+    // 如果当前行长度加上这个单词超过了最大长度
+    if (lineLength + word.length > 70) {
       // 如果当前行不为空,则添加一个空行
       if (currentLine.trim() !== '') {
         formattedText += `${currentLine.trim()}\n\n`;
