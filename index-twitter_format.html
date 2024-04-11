@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text Formatter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 16px;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    button {
+      display: block;
+      margin-bottom: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Text Formatter</h1>
+  <textarea id="inputText" placeholder="Enter text here"></textarea>
+  <textarea id="outputText" readonly></textarea>
+  <button id="clearButton">Clear</button>
+  <button id="formatButton">Format Text</button>
+
+  <script>
+function formatText(text) {
+  // 将文本划分为单词数组
+  const words = text.split(' ');
+
+  let formattedText = '';
+  let currentLine = '';
+  let lineLength = 0;
+
+  // 遍历每个单词
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i];
+
+    // 检查是否有标点符号
+    const hasPunctuation = /[,.:;!?]$/.test(word);
+
+    // 如果当前行长度加上这个单词超过了最大长度或包含标点符号
+    if (lineLength + word.length > 70 || hasPunctuation) {
+      // 如果当前行不为空,则添加一个空行
+      if (currentLine.trim() !== '') {
+        formattedText += `${currentLine.trim()}\n\n`;
+      }
+      // 重置当前行长度和内容
+      lineLength = 0;
+      currentLine = '';
+    }
+
+    // 如果当前单词长度小于10个字符
+    if (word.length < 10) {
+      // 将单词添加到当前行,并更新行长度
+      currentLine += word + ' ';
+      lineLength += word.length + 1;
+    } else {
+      // 将单词拆分为长度不超过70个字符的段落
+      while (word.length > 0) {
+        const segment = word.slice(0, 70 - lineLength);
+        currentLine += segment;
+        word = word.slice(segment.length);
+
+        // 如果当前行长度达到最大,则添加到格式化文本中并重置当前行
+        if (lineLength + segment.length === 70) {
+          formattedText += `${currentLine.trim()}\n\n`;
+          lineLength = 0;
+          currentLine = '';
+        } else {
+          currentLine += ' ';
+          lineLength += segment.length + 1;
+        }
+      }
+    }
+  }
+
+  // 添加最后一行
+  if (currentLine.trim() !== '') {
+    formattedText += `${currentLine.trim()}\n\n`;
+  }
+
+  return formattedText.trim();
+}
+
+    document.getElementById('formatButton').addEventListener('click', () => {
+      const inputText = document.getElementById('inputText').value;
+      const formattedText = formatText(inputText);
+      document.getElementById('outputText').value = formattedText;
+    });
+
+    document.getElementById('clearButton').addEventListener('click', () => {
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+    });
+  </script>
+</body>
+</html>
